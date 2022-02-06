@@ -12,6 +12,7 @@ class ErrorMessageViewController: UIViewController {
     @IBAction func closeButton(_ sender: Any) {
         moveOut()
     }
+    
     @IBOutlet weak var messageView: UIView!
     override func viewDidLoad() {
         super.viewDidLoad()

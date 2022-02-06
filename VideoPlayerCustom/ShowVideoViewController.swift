@@ -15,8 +15,11 @@ class ShowVideoViewController: UIViewController {
     var videoPlayer = VideoPlayer()
     var flagForPlayPause = true
     var flagForVolume = true
+    let leftTapAreaView = UIView()
+    let rightTapAreaView = UIView()
     
     @IBOutlet weak var videoScreenView: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         videoPlayer = VideoPlayer(url: URL(string: url)!)
@@ -25,36 +28,8 @@ class ShowVideoViewController: UIViewController {
         videoScreenView.addSubview(videoPlayer)
         
         videoPlayer.frame = CGRect(x: 0, y: 0, width: videoScreenView.bounds.width, height: videoScreenView.bounds.height)
-        
-        let leftTapAreaView = UIView()
-        leftTapAreaView.backgroundColor = .clear
-        leftTapAreaView.translatesAutoresizingMaskIntoConstraints = false
     
-        
-        let rightTapAreaView = UIView()
-        rightTapAreaView.backgroundColor = .clear
-        rightTapAreaView.translatesAutoresizingMaskIntoConstraints = false
-        
-        let doubleTapForward = UITapGestureRecognizer(target: self, action: #selector(rightViewTapped))
-        let doubleTapBack = UITapGestureRecognizer(target: self, action: #selector(leftViewTapped))
-        doubleTapBack.numberOfTapsRequired = 2
-        doubleTapForward.numberOfTapsRequired = 2
-        leftTapAreaView.addGestureRecognizer(doubleTapBack)
-        rightTapAreaView.addGestureRecognizer(doubleTapForward)
-        
-        let singleTapBack = UITapGestureRecognizer(target: self, action: #selector(singleTapped))
-        let singleTapForward = UITapGestureRecognizer(target: self, action: #selector(singleTapped))
-        singleTapForward.numberOfTapsRequired = 1
-        singleTapBack.numberOfTapsRequired = 1
-        leftTapAreaView.addGestureRecognizer(singleTapBack)
-        rightTapAreaView.addGestureRecognizer(singleTapForward)
-        
-        singleTapBack.require(toFail: doubleTapBack)
-        singleTapForward.require(toFail: doubleTapForward)
-        singleTapBack.delaysTouchesBegan = true
-        doubleTapBack.delaysTouchesBegan = true
-        doubleTapForward.delaysTouchesBegan = true
-        singleTapForward.delaysTouchesBegan = true
+        inicializeTaps()
         
         videoScreenView.addSubview(leftTapAreaView)
         videoScreenView.addSubview(rightTapAreaView)
@@ -74,9 +49,40 @@ class ShowVideoViewController: UIViewController {
         leftTapAreaView.isUserInteractionEnabled = true
         // Do any additional setup after loading the view.
     }
+    
+    private func inicializeTaps() {
+        leftTapAreaView.backgroundColor = .clear
+        leftTapAreaView.translatesAutoresizingMaskIntoConstraints = false
+    
+        rightTapAreaView.backgroundColor = .clear
+        rightTapAreaView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let doubleTapForward = UITapGestureRecognizer(target: self, action: #selector(rightViewTapped))
+        let doubleTapBack = UITapGestureRecognizer(target: self, action: #selector(leftViewTapped))
+        
+        doubleTapBack.numberOfTapsRequired = 2
+        doubleTapForward.numberOfTapsRequired = 2
+        leftTapAreaView.addGestureRecognizer(doubleTapBack)
+        rightTapAreaView.addGestureRecognizer(doubleTapForward)
+        
+        let singleTapBack = UITapGestureRecognizer(target: self, action: #selector(singleTapped))
+        let singleTapForward = UITapGestureRecognizer(target: self, action: #selector(singleTapped))
+        
+        singleTapForward.numberOfTapsRequired = 1
+        singleTapBack.numberOfTapsRequired = 1
+        leftTapAreaView.addGestureRecognizer(singleTapBack)
+        rightTapAreaView.addGestureRecognizer(singleTapForward)
+        
+        singleTapBack.require(toFail: doubleTapBack)
+        singleTapForward.require(toFail: doubleTapForward)
+        singleTapBack.delaysTouchesBegan = true
+        doubleTapBack.delaysTouchesBegan = true
+        doubleTapForward.delaysTouchesBegan = true
+        singleTapForward.delaysTouchesBegan = true
+    }
+    
     @objc func leftViewTapped() {
-        print(videoScreenView.bounds.width, "  ", videoScreenView.bounds.height)
-        let nowTime = CMTimeGetSeconds( (videoPlayer.videoPlayer.player?.currentTime())!)
+        let nowTime = CMTimeGetSeconds((videoPlayer.videoPlayer.player?.currentTime())!)
         let newTime = (nowTime - 15.0 < 0.0) ? 0.0 : nowTime - 15.0
         videoPlayer.videoPlayer.player?.seek(to: CMTimeMake(value: Int64(newTime * 1000), timescale: 1000))
     }
@@ -94,8 +100,8 @@ class ShowVideoViewController: UIViewController {
     
     
     @objc func rightViewTapped() {
-        let duration = CMTimeGetSeconds((videoPlayer.videoPlayer.player?.currentItem!.duration)!)
-        let nowTime = CMTimeGetSeconds( (videoPlayer.videoPlayer.player?.currentTime())!)
+        let duration =  CMTimeGetSeconds((videoPlayer.videoPlayer.player?.currentItem!.duration)!)
+        let nowTime = CMTimeGetSeconds((videoPlayer.videoPlayer.player?.currentTime())!)
         let newTime = (nowTime + 15.0 > duration) ? duration : nowTime + 15.0
         videoPlayer.videoPlayer.player?.seek(to: CMTimeMake(value: Int64(newTime * 1000), timescale: 1000))
     }
@@ -124,21 +130,19 @@ class ShowVideoViewController: UIViewController {
             videoPlayer.videoPlayer.player?.volume = 1.0
             sender.setImage(UIImage(systemName: "speaker.fill"), for: .normal)
         }
-        
+
         flagForVolume = !flagForVolume
     }
     
     @IBAction func forwardButton(_ sender: UIButton) {
         let duration = CMTimeGetSeconds((videoPlayer.videoPlayer.player?.currentItem!.duration)!)
-        let nowTime = CMTimeGetSeconds( (videoPlayer.videoPlayer.player?.currentTime())!)
-        print(nowTime)
+        let nowTime = CMTimeGetSeconds((videoPlayer.videoPlayer.player?.currentTime())!)
         let newTime = (nowTime + 15.0 > duration) ? duration : nowTime + 15.0
         videoPlayer.videoPlayer.player?.seek(to: CMTimeMake(value: Int64(newTime * 1000), timescale: 1000))
     }
     
     @IBAction func backButton(_ sender: UIButton) {
-        let nowTime = CMTimeGetSeconds( (videoPlayer.videoPlayer.player?.currentTime())!)
-        print(nowTime)
+        let nowTime = CMTimeGetSeconds((videoPlayer.videoPlayer.player?.currentTime())!)
         let newTime = (nowTime - 15.0 < 0.0) ? 0.0 : nowTime - 15.0
         videoPlayer.videoPlayer.player?.seek(to: CMTimeMake(value: Int64(newTime * 1000), timescale: 1000))
     }

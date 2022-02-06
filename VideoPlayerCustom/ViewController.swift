@@ -23,7 +23,6 @@ class ViewController: UIViewController {
             self.addChild(errorMessageVC)
             errorMessageVC.view.frame = self.view.frame
             self.view.addSubview(errorMessageVC.view)
-            
             errorMessageVC.didMove(toParent: self)
         }
     }

@@ -36,28 +36,9 @@ class VideoPlayer: UIView {
     }
     
     func inicialize() {
-//        var player = UserDefaults.standard.get(key: url!.absoluteString)
-//        if player == nil {
         player = AVPlayer(url: url!)
-//            UserDefaults.standard.commit(object: player!, key: url!.absoluteString)
-//        }
         videoPlayer.player = player
         player.volume = 1.0
         player.play()
     }
 }
-
-//extension UserDefaults {
-//    func commit(object: AVPlayer, key: String) {
-//        let encodedData: Data = try! NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding: true)
-//        self.set(encodedData, forKey: key)
-//        self.synchronize()
-//    }
-//
-//    func get(key: String) -> AVPlayer? {
-//        if let decoded = self.data(forKey: key) {
-//            return try! NSKeyedUnarchiver.unarchivedObject(ofClass: AVPlayer.self, from: decoded)
-//        }
-//        return nil
-//    }
-//}
