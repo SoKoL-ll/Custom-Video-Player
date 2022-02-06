@@ -18,6 +18,7 @@ class ShowVideoViewController: UIViewController {
     let leftTapAreaView = UIView()
     let rightTapAreaView = UIView()
     
+    @IBOutlet weak var topBarView: UIView!
     @IBOutlet weak var videoScreenView: UIView!
     
     override func viewDidLoad() {
@@ -48,6 +49,14 @@ class ShowVideoViewController: UIViewController {
         rightTapAreaView.isUserInteractionEnabled = true
         leftTapAreaView.isUserInteractionEnabled = true
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        if UIDevice.current.orientation.isLandscape {
+            topBarView.isHidden = true
+        } else {
+            topBarView.isHidden = false
+        }
     }
     
     private func inicializeTaps() {

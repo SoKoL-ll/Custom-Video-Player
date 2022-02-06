@@ -8,7 +8,6 @@
 import UIKit
 
 class ErrorMessageViewController: UIViewController {
-
     @IBAction func closeButton(_ sender: Any) {
         moveOut()
     }
